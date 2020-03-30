@@ -29,17 +29,17 @@ knitr::opts_chunk$set(
 List the contents of the .h5 file downloaded from ARChS4 webserver
 
 ```{r list the contents}
-h5ls("data/human_transcript_v7.h5")
+h5ls("c:/Users/ale097/Projects/ARChS4/data/human_transcript_v7.h5")
 
 ```
 Retrieve Gene Expression Omnibus (GEO) Aceession from matrix
 ```{r GEO accession}
-samples = h5read("data/human_transcript_v7.h5", "meta/Sample_geo_accession")
+samples = h5read("c:/Users/ale097/Projects/ARChS4/data/human_transcript_v7.h5", "meta/Sample_geo_accession")
 
 ```
 Retreive sample information and tissue from matrix
 ```{r sample information}
-tissue = h5read("data/human_transcript_v7.h5", "meta/Sample_source_name_ch1")
+tissue = h5read("c:/Users/ale097/Projects/ARChS4/data/human_transcript_v7.h5", "meta/Sample_source_name_ch1")
 
 ```
 
@@ -81,9 +81,11 @@ metadata <- samples %>%
 
 metadata
 ```
+
+
 ```{r retreive transcript information}
 
-transcripts = h5read("data/human_transcript_v7.h5", "meta/transcripts")
+transcripts = h5read("c:/Users/ale097/Projects/ARChS4/data/human_transcript_v7.h5", "meta/transcripts")
 
 ```
 
@@ -99,7 +101,7 @@ sampGSE105248 = GSE105248_meta$GEO
 
 sample_retrieve_GSE105248 = which(samples %in% sampGSE105248)
 
-expression_GSE105248= h5read("data/human_transcript_v7.h5", "data/expression", index = list(1:length(transcripts), sample_retrieve_GSE105248))
+expression_GSE105248= h5read("c:/Users/ale097/Projects/ARChS4/data/human_transcript_v7.h5", "data/expression", index = list(1:length(transcripts), sample_retrieve_GSE105248))
 H5close()
 rownames(expression_GSE105248) = transcripts
 colnames(expression_GSE105248) = samples[sample_retrieve_GSE105248]
@@ -133,6 +135,15 @@ ggsave(filename = "results/Erales_FBL_GSE105248.png", plot = plot_FBL, width = 1
 
 ```
 
+```{r Genious analysis of 5' and 3' UTRs}
+
+genious_UTRs <- read_csv("data/Erales_RiboSeq_UTRs_genious.csv")
+
+```
+
+
+
+
 ```{r Erales significant transcripts}
 
 	
@@ -158,29 +169,128 @@ GSE105248 <- data.frame(names = row.names(expression_GSE105248), expression_GSE1
            names == "ENST00000339336.8"|
            names == "ENST00000616727.4"|
            names == "ENST00000621141.4"|
-           names == "ENST00000325110.10") %>% 
+           names == "ENST00000325110.10"|
+           names == "ENST00000261507.10"|
+           names == "ENST00000380753.8"|
+           names == "ENST00000303115.7"|
+           names == "ENST00000394128.6"|
+           names == "ENST00000380872.8"|
+           names == "ENST00000374700.6"|
+           names == "ENST00000247829.7"|
+           names == "ENST00000287272.6"|
+           names == "ENST00000296849.9"|
+           names == "ENST00000361852.8"|
+           names == "ENST00000295830.12"|
+           names == "ENST00000551568.5"|
+           names == "ENST00000627148.2"|
+           names == "ENST00000335099.7"|
+           names == "ENST00000408937.7"|
+           names == "ENST00000346872.7"|
+           names == "ENST00000317744.9"|
+           names == "ENST00000216286.9"|
+           names == "ENST00000301459.4"|
+           names == "ENST00000449912.6"|
+           names == "ENST00000302017.3"|
+           names == "ENST00000397910.8"|
+           names == "ENST00000260702.3"|
+           names == "ENST00000251102.12"|
+           names == "ENST00000325089.7"|
+           names == "ENST00000519716.6"|
+           names == "ENST00000247005.7"|
+           names == "ENST00000429504.6"|
+           names == "ENST00000268489.9"|
+           names == "ENST00000428956.6"|
+           names == "ENST00000421952.2"|
+           names == "ENST00000350763.8"|
+           names == "ENST00000561626.3"|
+           names == "ENST00000426838.8"|
+           names == "ENST00000374490.7"|
+           names == "ENST00000371432.7"|
+           names == "ENST00000406686.7"|
+           names == "ENST00000260302.7"|
+           names == "ENST00000472056.5") %>% 
   gather(GEO, expn, -names) %>%
   mutate(
-    transcript = str_replace_all(names, c(
-             "ENST00000382438.5" = "NKX3-2",
-             "ENST00000382333.1" = "FGFBP1",
-             "ENST00000239316.4" = "INSL4",
-             "ENST00000512729.5" = "TRIML2",
-             "ENST00000339336.8" = "AMTN",
-             "ENST00000616727.4" = "MUC13 ",
-             "ENST00000621141.4" = "GPR1_210",
-             "ENST00000325110.10" = "HMGCS1_201"))) %>% 
-  full_join(GSE105248_meta, by = "GEO") 
+    transcript = str_replace_all(names, 
+                                 c("ENST00000382438.5" = "NKX3-2",
+                                   "ENST00000382333.1" = "FGFBP1",
+                                   "ENST00000239316.4" = "INSL4",
+                                   "ENST00000512729.5" = "TRIML2",
+                                   "ENST00000339336.8" = "AMTN",
+                                   "ENST00000616727.4" = "MUC13 ",
+                                   "ENST00000621141.4" = "GPR1210",
+                                   "ENST00000325110.10" = "HMGCS1-201",
+                                   "ENST00000261507.10" = "MSMO1-201",
+                                   "ENST00000380753.8" = "AKR1C2-201",
+                                   "ENST00000303115.7" = "IL7R-201",
+                                   "ENST00000394128.6" = "MED24-204",
+                                   "ENST00000380872.8" = "AKR1C1-202",
+                                   "ENST00000374700.6" = "AOX1-202",
+                                   "ENST00000247829.7" = "TSPAN8-201",
+                                   "ENST00000287272.6" = "UNC5D-201",
+                                   "ENST00000296849.9" = "NKD2-202",
+                                   "ENST00000361852.8" = "EPS8L3-201",
+                                   "ENST00000295830.12" = "RPL22L1-201",
+                                   "ENST00000551568.5" = "CPM-211",
+                                   "ENST00000627148.2"= "CGA-204",
+                                   "ENST00000335099.7" = "RTN4RL2-201",
+                                   "ENST00000408937.7" = "FOXP2-211",
+                                   "ENST00000346872.7" = "IKZF3-203",
+                                   "ENST00000317744.9" = "WSCD1-201",
+                                   "ENST00000216286.9" = "NID2-201",
+                                   "ENST00000301459.4" = "RCOR2-201",
+                                   "ENST00000449912.6" = "TRPM6-204",
+                                   "ENST00000302017.3" = "ZNF467-201",
+                                   "ENST00000397910.8" = "MUC16-201",
+                                   "ENST00000260702.3" = "LOXL4-201",
+                                   "ENST00000251102.12" = "CNGB1-201",
+                                   "ENST00000325089.7" = "SLITRK5-201",
+                                   "ENST00000519716.6" = "UNC13A-202",
+                                   "ENST00000247005.7" = "GDF1-201",
+                                   "ENST00000429504.6" = "CERS1-201",
+                                   "ENST00000268489.9" = "ZFHX3-201",
+                                   "ENST00000428956.6" = "C4A-243",
+                                   "ENST00000421952.2" = "DDN-201",
+                                   "ENST00000350763.8" = "TNC-202",
+                                   "ENST00000561626.3" = "ELFN1-202",
+                                   "ENST00000426838.8" = "SETBP1-201",
+                                   "ENST00000374490.7" = "HMGCL-203",
+                                   "ENST00000371432.7" = "RUNX2-202",
+                                   "ENST00000406686.7" = "SLC22A23-203",
+                                   "ENST00000260302.7" = "MMP13-201",
+                                   "ENST00000472056.5" = "COL6A3-209"))) %>%
+  full_join(GSE105248_meta, by = "GEO")
 
-write_csv(GSE105248, path = "Erales_Riboseq_signf_levels.csv")
+write_csv(GSE105248, path = "data/Erales_Riboseq_signf_levels.csv")
 
 plot_GSE105248 <- ggplot(GSE105248, aes(x= transcript, y = expn, color = antibiotic_treatment)) +
   geom_boxplot() +
+  theme(axis.text.x=element_text(size=5, angle=90)) +
   labs(title = "transcripts affected in FBL-knockdown cells", 
        x = "transcript",
        y = "expression")
 
-ggsave(filename = "results/Erales_FBL_GSE105248.png", plot = plot_FBL, width = 15, height = 8, dpi = 600, units = "cm")
+ggsave(filename = "results/Erales_GSE105248.png", plot = plot_GSE105248, width = 20, height = 8, dpi = 600, units = "cm")
 
 
 ```
+
+
+```{r extracting transcript expression levels}
+
+levels <- read_csv("data/Erales_Riboseq_signf_levels.csv")
+
+expn_levels <- levels %>% 
+  group_by(transcript, antibiotic_treatment) %>%
+  summarise(avg_expn = mean(expn)) %>% 
+  group_by(transcript) %>% 
+  mutate(baseline = lag(avg_expn)) %>%
+  mutate(expn_fold_change = (avg_expn - baseline) / baseline) %>% 
+  filter(baseline != "NA") %>% 
+  select(-antibiotic_treatment) %>%
+  separate(transcript, into = c('Name', 'isoform'), sep = "-")
+
+full_join(genious_UTRs, expn_levels, by = "Name")
+
+```
+
